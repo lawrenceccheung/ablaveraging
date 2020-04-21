@@ -118,6 +118,26 @@ class ABLStatsFileClass():
         temperature = self.abl_stats.variables['temperature']
         self.T_h = interpolate.interp1d(self.heights, temperature[:, :], axis=1)
 
+    def get_latesttime(self, field='velocity', index=0, scalar=False, zeroD=False):
+        '''
+        Provide field time average
+        field - the field to time-average
+        index - the component index (for example: velocity has 3 components)
+        '''
+        
+        # Filter the field based on the times
+        filt = -1 #((self.time[:] >= times[0]) & (self.time[:] <= times[1]))
+        # Filtered time
+        t = self.time[filt]
+
+        # Filtered field
+        #if field=='utau': f = self.utau[filt]
+        if zeroD:         f = self.abl_stats[field][filt]
+        elif scalar:      f = self.abl_stats[field][filt,:]
+        else:             f = self.abl_stats[field][filt,:,index]
+
+        return f
+
     def time_average(self, field='velocity', index=0, times=[0., 100], scalar=False, zeroD=False):
         '''
         Provide field time average
@@ -272,9 +292,9 @@ def plotveltavgprofile(data, figax, tlims=[], **kwargs):
         t1 = float(t1entry.get())
         t2 = float(t2entry.get())    
     z = data.heights
-    u = data.time_average(field='velocity_tavg', index=0, times=[t1, t2])
-    v = data.time_average(field='velocity_tavg', index=1, times=[t1, t2])
-    w = data.time_average(field='velocity_tavg', index=2, times=[t1, t2])
+    u = data.get_latesttime(field='velocity_tavg', index=0)
+    v = data.get_latesttime(field='velocity_tavg', index=1)
+    w = data.get_latesttime(field='velocity_tavg', index=2)
     u_mag = np.sqrt(u**2 + v**2 + w**2)
     if 'exportdata' in kwargs: 
         headers="z, u, v, w, u_mag"
@@ -411,7 +431,8 @@ def plotttavgprofile(data, figax, tlims=[], **kwargs):
         t1 = float(t1entry.get())
         t2 = float(t2entry.get())
     z = data.heights
-    T = data.time_average(field='temperature_tavg', index=0, times=[t1, t2], scalar=True)
+    #T = data.time_average(field='temperature_tavg', index=0, times=[t1, t2], scalar=True)
+    T = data.get_latesttime(field='temperature_tavg', index=0,  scalar=True)
     if 'exportdata' in kwargs: 
         return np.vstack((z, T)).transpose(), "z, T"
     figax.plot(T, z, '-o', label='Temp')
@@ -490,9 +511,9 @@ def plottfluxtavgprofile(data, figax, tlims=[], **kwargs):
         t2 = float(t2entry.get())
     z  = data.heights
     Tfstr = 'temperature_resolved_flux_tavg'
-    Tu = data.time_average(field=Tfstr, index=0, times=[t1, t2])
-    Tv = data.time_average(field=Tfstr, index=1, times=[t1, t2])
-    Tw = data.time_average(field=Tfstr, index=2, times=[t1, t2])
+    Tu = data.get_latesttime(field=Tfstr, index=0) #data.time_average(field=Tfstr, index=0, times=[t1, t2])
+    Tv = data.get_latesttime(field=Tfstr, index=1) #data.time_average(field=Tfstr, index=1, times=[t1, t2])
+    Tw = data.get_latesttime(field=Tfstr, index=2) #data.time_average(field=Tfstr, index=2, times=[t1, t2])
     if 'exportdata' in kwargs: 
         headers="z, Tu, Tv, Tw"
         return np.vstack((z, Tu, Tv, Tw)).transpose(), headers
@@ -709,7 +730,7 @@ allplotfunctions=[["Velocity time trace", plotvelocityhistory, "Vtrace"],
                   ["Velocity tavg Prof",  plotveltavgprofile,  "Vtavgprof"],
                   ["Veer Profile",        plotveerprofile,     "Veerprof"],
                   ["Temperature Profile", plottemperatureprofile, "Tprof"],
-                # ["Temp tavg Profile",   plotttavgprofile,    "Ttavgprof"],
+                  ["Temp tavg Profile",   plotttavgprofile,    "Ttavgprof"],
                   ["Temp flux Profile",   plottfluxprofile,    "Tfluxprof"],
                   ["Temp flux SFS Prof",  plottfluxsfsprofile,"Tfluxsfsprof"],
                   ["Temp flux tavg Prof", plottfluxtavgprofile,"Tfluxtavgprof"],

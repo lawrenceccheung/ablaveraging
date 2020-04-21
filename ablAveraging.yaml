@@ -150,7 +150,7 @@ realms:
       wall_user_data:
         velocity: [0,0,0]
         use_abl_wall_function: yes
-        heat_flux: 0.0
+        heat_flux: 50.0 # 0.0
         reference_temperature: 300.0
         roughness_height: 0.1
         gravity_vector_component: 3
@@ -258,8 +258,8 @@ realms:
       target_name: [fluid]
       stats_output_file: "abl_statistics.nc"
       compute_temperature_statistics: yes
-      output_frequency: 10
-      time_hist_output_frequency: 2
+      output_frequency: 1
+      time_hist_output_frequency: 1
 
     # This defines the ABL forcing to drive the winds to 8 m/s from
     # 245 degrees (southwest) at 90 m above the surface in a planar
@@ -287,7 +287,7 @@ Time_Integrators:
   - StandardTimeIntegrator:
       name: ti_1
       start_time: 0.0
-      termination_step_count: 10
+      termination_step_count: 100
       time_step: 0.5
       time_stepping_type: fixed
       time_step_count: 0

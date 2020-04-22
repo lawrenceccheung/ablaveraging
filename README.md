@@ -14,6 +14,7 @@ $ git clone git@github.com:lawrenceccheung/ablaveraging.git
 
 2.  Generate the mesh
 ```bash
+$ cd ablaveraging
 $ abl_mesh -i nalu_abl_mesh.yaml
 $ nalu_preprocess -i nalu_preprocess.yaml
 ```
@@ -44,4 +45,9 @@ Difference between manual and Nalu-wind time-average
 <Tv> diff L2:   8.263943e-04
 <Tw> diff L2:   1.597271e-05
 ```
+
+A plot of several of the statistics is also created:
+![image](https://user-images.githubusercontent.com/15526007/80016261-19216f00-8490-11ea-9eb5-448a31fbe7e5.png)
+
+Note that `<Tu>` is significantly off.
 

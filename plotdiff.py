@@ -10,6 +10,8 @@ tlims     = [0, 100]
 data      = plotABLstats.ABLStatsFileClass(stats_file=statsfile)
 
 print("")
+print("Difference between manual and Nalu-wind time-average")
+print("------------")
 
 # Velocity differences
 Vprof, header  = plotABLstats.plotvelocityprofile(data, None, tlims=tlims, exportdata=True)
@@ -21,7 +23,7 @@ print("<Umag> diff L2: %e"%linalg.norm(Vprof2[:,4] - Vprof[:,4]))
 Tprof, header  = plotABLstats.plottemperatureprofile(data, None, tlims=tlims, exportdata=True)
 Tprof2, header = plotABLstats.plotttavgprofile(data, None, tlims=tlims, exportdata=True)
 Tdat           = loadtxt('abl_temperature_stats.dat')
-print("<T> diff L2:    %e"%linalg.norm(Tprof2[:,1] - Tprof[:,1]))
+print("<T>  diff L2:   %e"%linalg.norm(Tprof2[:,1] - Tprof[:,1]))
 
 # TKE differences
 TKEprof, header  = plotABLstats.plottkeprofile(data, None, tlims=tlims, exportdata=True)
@@ -38,25 +40,33 @@ print("<Tv> diff L2:   %e"%linalg.norm(Tfluxprof[:,2] - TuAvgprof[:,2]))
 print("<Tw> diff L2:   %e"%linalg.norm(Tfluxprof[:,3] - TuAvgprof[:,3]))
 
 print("")
-# --- make some plots --- 
-figure(figsize=(14,8), facecolor='white')
-Nplots=4
 
+
+# --- make some plots --- 
+
+figure(figsize=(14,8), facecolor='white')
+Nplots=4             # Number of plots to make
+
+# Velocity profile
 subplot(1,Nplots,1)
 plot(Vprof[:,4], Vprof[:,0],  '+-',  label='manual tavg')
 plot(Vprof2[:,4]-0*Vprof[:,4], Vprof2[:,0], '.-', label='netcdf tavg')
 plot(sqrt(Vdat[:,1]**2 + Vdat[:,2]**2 + Vdat[:,3]**2)-0*Vprof[:,4], Vdat[:,0], '-', label='Stats file', marker='o', fillstyle='none')
 ylabel('z [m]')
 xlabel('U [m/s]')
+title('<Umag>')
 legend(loc='best')
 
+# Temperature profile
 subplot(1,Nplots,2)
 plot(Tprof[:,1],  Tprof[:,0],  '+-', label='manual tavg')
 plot(Tprof2[:,1]-0*Tprof[:,1], Tprof2[:,0], '.-', label='netcdf tavg')
 plot(Tdat[:,1]-0*Tprof[:,1],   Tdat[:,0],   '-',  label='stats file', marker='o', fillstyle='none')
 xlabel('T [K]')
+title('<T>')
 legend(loc='best')
 
+# TKE profile
 subplot(1,Nplots,3)
 plot(TKEprof[:,1], TKEprof[:,0],  '.-',  label='manual tavg')  # uu
 plot(TKEdat[:,1],  TKEdat[:,0],  '+-',   label='stats file')   
@@ -64,11 +74,15 @@ plot(TKEdat[:,1],  TKEdat[:,0],  '+-',   label='stats file')
 #plot(TKEdat[:,4],  TKEdat[:,0],  '+-',   label='stats file')
 #plot(TKEprof[:,3], TKEprof[:,0],  '.-',  label='manual tavg')  # ww
 #plot(TKEdat[:,6],  TKEdat[:,0],  '+-',   label='stats file')
+xlabel('uu [m^2/s^2]')
+title('<uu>')
 legend(loc='best')
 
+# T-flux profile
 subplot(1,Nplots,4)
 plot(Tfluxprof[:,1], Tfluxprof[:,0],  '.-',  label='manual tavg')  # Tu
 plot(TuAvgprof[:,1], Tfluxprof[:,0],  '.-',  label='netcdf tavg')  # Tu
+title('<Tu>')
 legend(loc='best')
 
 # Make the final plot

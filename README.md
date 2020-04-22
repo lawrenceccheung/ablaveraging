@@ -7,7 +7,7 @@
 ```bash
 $ git clone git@gitlab.sandia.gov:lcheung/ablaveraging.git
 ```
-    Or the public github server:
+Or the public github server:
 ```bash
 $ git clone git@github.com:lawrenceccheung/ablaveraging.git
 ```

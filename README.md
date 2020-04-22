@@ -3,13 +3,13 @@
 ## Instructions
 
 1.  Download or clone the repo  
-    Using sandia gitlab:  
+    Using Sandia's gitlab:  
 ```bash
 $ git clone git@gitlab.sandia.gov:lcheung/ablaveraging.git
 ```
     Or the public github server:
 ```bash
-$ git clone
+$ git clone git@github.com:lawrenceccheung/ablaveraging.git
 ```
 
 2.  Generate the mesh
